@@ -1,11 +1,11 @@
-import React, { useRef, useCallback, useContext } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import * as Yup from 'yup';
 import logoImg from '../../assets/logo.svg';
 
-import { AuthContext } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/AuthContext';
 import getValidationErros from '../../utils/getValidationErros';
 
 import Input from '../../components/Input';
@@ -21,9 +21,8 @@ interface SignInFormData {
 const SignIn: React.FC = () => {
 
   const formRef = useRef<FormHandles>(null);
-  const { user, signIn } = useContext(AuthContext);
+  const { signIn } = useAuth();
 
-  console.log(user);
 
   const  handleSubmit = useCallback( async (data: SignInFormData ) => {
     try{
@@ -41,9 +40,13 @@ const SignIn: React.FC = () => {
         password: data.password,
       });
     }catch(err){
-      const errors = getValidationErros(err);
 
-      formRef.current?.setErrors(errors);
+      if(err instanceof Yup.ValidationError) {
+        const errors = getValidationErros(err);
+
+        formRef.current?.setErrors(errors);
+      }
+
     }
   }, [signIn]);
 
