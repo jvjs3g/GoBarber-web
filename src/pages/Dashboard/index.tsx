@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Container, Header, HeaderContent, Profile, Content, Schedule, NextAppointment, Calendar } from './styles';
+import { Container, Header, HeaderContent, Profile, Content, Schedule, NextAppointment,Section, Appointment , Calendar } from './styles';
 
 import logoImg from '../../assets/logo.svg';
 import { FiClock, FiPower } from 'react-icons/fi';
@@ -8,7 +8,10 @@ import { useAuth } from '../../hooks/Auth';
 
 const Dashboard: React.FC = () =>{
 
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
   const { signOut, user } = useAuth();
+
 
   return (
     <Container>
@@ -49,6 +52,48 @@ const Dashboard: React.FC = () =>{
           </div>
 
         </NextAppointment>
+        <Section>
+          <strong>Manhã</strong>
+          <Appointment>
+            <span>
+              <FiClock />
+              08:00
+            </span>
+            <div>
+              <img src="https://avatars3.githubusercontent.com/u/44537126?s=460&u=17a9a5508a165e1cc0c1b4b03cccae3791d5b4bd&v=4" alt="Joao vitor de jesus silva"/>
+
+              <strong>Joao vitor de jesus silva</strong>
+            </div>
+          </Appointment>
+
+          <Appointment>
+            <span>
+              <FiClock />
+              08:00
+            </span>
+            <div>
+              <img src="https://avatars3.githubusercontent.com/u/44537126?s=460&u=17a9a5508a165e1cc0c1b4b03cccae3791d5b4bd&v=4" alt="Joao vitor de jesus silva"/>
+
+              <strong>Joao vitor de jesus silva</strong>
+            </div>
+          </Appointment>
+        </Section>
+
+        <Section>
+          <strong>Tarde</strong>
+
+          <Appointment>
+            <span>
+              <FiClock />
+              08:00
+            </span>
+            <div>
+              <img src="https://avatars3.githubusercontent.com/u/44537126?s=460&u=17a9a5508a165e1cc0c1b4b03cccae3791d5b4bd&v=4" alt="Joao vitor de jesus silva"/>
+
+              <strong>Joao vitor de jesus silva</strong>
+            </div>
+          </Appointment>
+        </Section>
       </Schedule>
       <Calendar/>
     </Content>
