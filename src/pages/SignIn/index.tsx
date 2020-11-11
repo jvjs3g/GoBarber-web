@@ -56,9 +56,9 @@ const SignIn: React.FC = () => {
       }
 
       addToast({
-        type: 'success',
-        title: 'Logon efetuado com sucesso',
-        description: 'Tudo certo Dev !!',
+        type: 'error',
+        title: 'Erro ao efetuar login',
+        description: 'Email ou senha incorretos, tente novamente.',
       });
     }
   }, [signIn, addToast, history]);
