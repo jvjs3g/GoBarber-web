@@ -44,6 +44,12 @@ const SignIn: React.FC = () => {
         password: data.password,
       });
 
+      addToast({
+        type: 'success',
+        title: 'Logon efetuado com sucesso',
+        description: 'Bem-vindo',
+      });
+
       history.push('/dashboard');
     }catch(err){
 
@@ -55,7 +61,7 @@ const SignIn: React.FC = () => {
         return;
       }
 
-      addToast({
+      a ddToast({
         type: 'error',
         title: 'Erro ao efetuar login',
         description: 'Email ou senha incorretos, tente novamente.',
