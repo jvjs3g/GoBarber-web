@@ -77,7 +77,7 @@ const Profile: React.FC = () => {
                 password_confirmation,
               }
             : {}),
-        };
+        };//
 
         const response = await api.put('/profile', formData);
         updateUser(response.data);
