@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { isToday, format, isAfter, parseISO } from 'date-fns';
-// eslint-disable-next-line import/no-duplicates
 import ptBR from 'date-fns/locale/pt-BR';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
@@ -42,6 +41,7 @@ interface Appointment {
 const Dashboard: React.FC = () => {
   const { signOut, user } = useAuth();
 
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [monthAvailability, setMonthAvailability] = useState<
@@ -54,7 +54,7 @@ const Dashboard: React.FC = () => {
       setSelectedDate(day);
     }
   }, []);
-//ok
+
   const handleMonthChange = useCallback((month: Date) => {
     setCurrentMonth(month);
   }, []);
@@ -69,7 +69,7 @@ const Dashboard: React.FC = () => {
       })
       .then(response => setMonthAvailability(response.data));
   }, [currentMonth, user.id]);
-//
+
   useEffect(() => {
     api
       .get<Appointment[]>('/appointments/me', {
@@ -142,7 +142,7 @@ const Dashboard: React.FC = () => {
             <div>
               <span>Bem-Vindo, </span>
               <Link to="/profile">
-                <Link to="/profile"><strong>{user.name}</strong></Link>
+                <strong>{user.name}</strong>
               </Link>
             </div>
           </Profile>

@@ -61,7 +61,7 @@ const SignIn: React.FC = () => {
         return;
       }
 
-      a ddToast({
+      addToast({
         type: 'error',
         title: 'Erro ao efetuar login',
         description: 'Email ou senha incorretos, tente novamente.',
