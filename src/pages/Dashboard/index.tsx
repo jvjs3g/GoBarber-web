@@ -138,7 +138,16 @@ const Dashboard: React.FC = () => {
           <img src={logoImg} alt="GoBarber" />
 
           <Profile>
-            <img src={user.avatar_url} alt={user.name} />
+
+          {user.avatar_url ? (
+              <img src={user.avatar_url} alt={user.name} />
+            ) : (
+              <img
+                src={`https://avatar.oxro.io/avatar?name=${user.name}`}
+                alt={user.name}
+              />
+            )}
+
             <div>
               <span>Bem-Vindo, </span>
               <Link to="/profile">
@@ -165,10 +174,14 @@ const Dashboard: React.FC = () => {
             <NextAppointment>
               <strong>Agendamento a seguir</strong>
               <div>
-                <img
-                  src={nextAppointment.user.avatar_url}
-                  alt={nextAppointment.user.name}
-                />
+              {user.avatar_url ? (
+              <img src={user.avatar_url} alt={user.name} />
+            ) : (
+              <img
+                src={`https://avatar.oxro.io/avatar?name=${user.name}`}
+                alt={user.name}
+              />
+            )}
                 <strong>{nextAppointment.user.name}</strong>
                 <span>
                   <FiClock />
@@ -212,10 +225,14 @@ const Dashboard: React.FC = () => {
                   {appointment.hourFormatted}
                 </span>
                 <div>
-                  <img
-                    src={appointment.user.avatar_url}
-                    alt={appointment.user.name}
-                  />
+                {user.avatar_url ? (
+              <img src={user.avatar_url} alt={user.name} />
+            ) : (
+              <img
+                src={`https://avatar.oxro.io/avatar?name=${user.name}`}
+                alt={user.name}
+              />
+            )}
                   <strong>{appointment.user.name}</strong>
                 </div>
               </Appointment>
