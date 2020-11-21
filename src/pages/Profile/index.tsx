@@ -128,6 +128,7 @@ const Profile: React.FC = () => {
   );
 //
   return (
+
     <Container>
       <header>
         <div>
@@ -146,21 +147,14 @@ const Profile: React.FC = () => {
           onSubmit={handleSubmit}
         >
           <AvatarInput>
-          {user.avatar_url ? (
-              <img src={user.avatar_url} alt={user.name} />
-            ) : (
-              <img
-                src={`https://avatar.oxro.io/avatar?name=${user.name}`}
-                alt={user.name}
-              />
-            )}
+              <img src={user.avatar_url} alt={user.name}  />
+
             <label htmlFor="avatar">
               <FiCamera />
               <input type="file" id="avatar" onChange={handleAvatarChange} />
             </label>
           </AvatarInput>
           <h1>Meu Perfil</h1>
-
           <Input name="name" icon={FiUser} placeholder="Nome" />
           <Input name="email" icon={FiMail} placeholder="E-mail" />
           <Input
