@@ -1,43 +1,69 @@
 import React from 'react';
-import { render, fireEvent,  } from '@testing-library/react';
-import SignIn from '../../pages/SignIn';
 
-const mockedHistoryPush = jest.fn();
+import Input from '../../components/Input';
+import { render, fireEvent, wait } from '@testing-library/react';
+import { colors } from '../../styles/variables';
 
-
-jest.mock('react-router-dom', () => {
+jest.mock('@unform/core', () => {
   return {
-    useHistory: () => ({
-      push: mockedHistoryPush,
-    }),
-    Link: ({ children }: { children: React.ReactNode }) => children,
+    useField(name: string) {
+      return {
+        fieldName: name,
+        defaultValue: '',
+        error: '',
+        registerField: jest.fn(),
+      }
+    }
   };
 });
 
-jest.mock('../../hooks/auth',() =>{
-  return{
-    useAuth: () => ({
-      signIn: jest.fn(),
-    }),
-  }
-})
+describe('Input component', () => {
+  it('should be able to render input component', () => {
+    const { getByPlaceholderText } = render(
+      <Input name="email" placeholder="E-mail" />
+    );
 
-describe('SignIn Page', () => {
-  it('should be able to sign in', async () => {
-    const { getByPlaceholderText, getByText } = render(<SignIn />);
+    const inputElement = getByPlaceholderText('E-mail');
 
-    const emailField = getByPlaceholderText('E-mail');
-    const passwordField = getByPlaceholderText('Senha');
-    const buttonElement = getByText('Entrar');
+    expect(inputElement).toBeTruthy();
+  });
 
-    fireEvent.change(emailField, { target: { valeu: 'joao3kln@hotmil.com' } });
-    fireEvent.change(passwordField, { target: { valeu: '123456' } });
-    fireEvent.click(buttonElement);
+  it('should be able to highlight when focused', async () => {
+    const { getByPlaceholderText, getByTestId } = render(
+      <Input name="email" placeholder="E-mail" />
+    );
 
-    await waitFor(() => {
-      expect(mockedHistoryPush).toHaveBeenCalledWith('/dashboard');
+    const inputElement = getByPlaceholderText('E-mail');
+    const inputContainer = getByTestId('input-container');
+
+    fireEvent.focus(inputElement);
+    await wait(() => {
+      expect(inputContainer).toHaveStyle(`border-color: ${colors.primary}`);
+      expect(inputContainer).toHaveStyle(`color: ${colors.primary}`);
     });
 
+    fireEvent.blur(inputElement);
+    await wait(() => {
+      expect(inputContainer).not.toHaveStyle(`border-color: ${colors.primary}`);
+      expect(inputContainer).not.toHaveStyle(`color: ${colors.primary}`);
+    });
+  });
+
+  it('should be able to highlight when input is filled', async () => {
+    const { getByPlaceholderText, getByTestId } = render(
+      <Input name="email" placeholder="E-mail" />
+    );
+
+    const inputElement = getByPlaceholderText('E-mail');
+    const inputContainer = getByTestId('input-container');
+
+    fireEvent.change(inputElement,
+      { target: { value: 'johndoe@example.com.br' }}
+    );
+    fireEvent.blur(inputElement);
+
+    await wait(() => {
+      expect(inputContainer).toHaveStyle(`color: ${colors.primary}`);
+    });
   });
 });
-//
