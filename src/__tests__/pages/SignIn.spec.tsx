@@ -47,7 +47,7 @@ describe('Input component', () => {
       expect(inputContainer).not.toHaveStyle(`border-color: ${colors.primary}`);
       expect(inputContainer).not.toHaveStyle(`color: ${colors.primary}`);
     });
-  });
+  });//
 
   it('should be able to highlight when input is filled', async () => {
     const { getByPlaceholderText, getByTestId } = render(
