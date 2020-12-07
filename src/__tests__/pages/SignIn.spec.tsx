@@ -1,69 +1,97 @@
 import React from 'react';
-
-import Input from '../../components/Input';
 import { render, fireEvent, wait } from '@testing-library/react';
-import { colors } from '../../styles/variables';
+import SignIn from '../../pages/SignIn';
 
-jest.mock('@unform/core', () => {
+
+const mockedHistoryPush = jest.fn();
+const mokedSignIn = jest.fn();
+const mokedaddToast = jest.fn();
+
+jest.mock('../../hooks/Toast', () => {
   return {
-    useField(name: string) {
-      return {
-        fieldName: name,
-        defaultValue: '',
-        error: '',
-        registerField: jest.fn(),
-      }
-    }
+    useToast: () => ({
+      addToast: mokedaddToast,
+    }),
   };
 });
 
-describe('Input component', () => {
-  it('should be able to render input component', () => {
-    const { getByPlaceholderText } = render(
-      <Input name="email" placeholder="E-mail" />
-    );
+jest.mock('react-router-dom', () => {
+  return {
+    useHistory: () => ({
+      push: mockedHistoryPush,
+    }),
+    Link: ({ children }: { children: React.ReactNode }) => children,
+  };
+});
 
-    const inputElement = getByPlaceholderText('E-mail');
+jest.mock('../../hooks/auth', () => {
+  return {
+    useAuth: () => ({
+      SignIn: mokedSignIn,
+    }),
+  };
+});
 
-    expect(inputElement).toBeTruthy();
+describe('SignIn page', () => {
+
+  beforeEach(() => {
+    mockedHistoryPush.mockClear();
+  });
+  it('should be able to sign in', async  () => {
+    const { getByPlaceholderText, getByText } = render(<SignIn />);
+
+    const emailField = getByPlaceholderText('E-mail');
+    const passwordField = getByPlaceholderText('Senha');
+    const buttonElement = getByText('Entrar');
+
+    fireEvent.change(emailField, { target: { valew: 'joao@hotmail.com' } });
+    fireEvent.change(passwordField, { target: { valew: '123456' } });
+    fireEvent.click(buttonElement);
+
+    await wait(() => {
+      expect(mockedHistoryPush).toHaveBeenCalledWith('/dashboard');
+    });
   });
 
-  it('should be able to highlight when focused', async () => {
-    const { getByPlaceholderText, getByTestId } = render(
-      <Input name="email" placeholder="E-mail" />
-    );
+  it('should not  be able to sign in with invalid credentials', async  () => {
+    const { getByPlaceholderText, getByText } = render(<SignIn />);
 
-    const inputElement = getByPlaceholderText('E-mail');
-    const inputContainer = getByTestId('input-container');
+    const emailField = getByPlaceholderText('E-mail');
+    const passwordField = getByPlaceholderText('Senha');
+    const buttonElement = getByText('Entrar');
 
-    fireEvent.focus(inputElement);
-    await wait(() => {
-      expect(inputContainer).toHaveStyle(`border-color: ${colors.primary}`);
-      expect(inputContainer).toHaveStyle(`color: ${colors.primary}`);
-    });
-
-    fireEvent.blur(inputElement);
-    await wait(() => {
-      expect(inputContainer).not.toHaveStyle(`border-color: ${colors.primary}`);
-      expect(inputContainer).not.toHaveStyle(`color: ${colors.primary}`);
-    });
-  });//
-
-  it('should be able to highlight when input is filled', async () => {
-    const { getByPlaceholderText, getByTestId } = render(
-      <Input name="email" placeholder="E-mail" />
-    );
-
-    const inputElement = getByPlaceholderText('E-mail');
-    const inputContainer = getByTestId('input-container');
-
-    fireEvent.change(inputElement,
-      { target: { value: 'johndoe@example.com.br' }}
-    );
-    fireEvent.blur(inputElement);
+    fireEvent.change(emailField, { target: { valew: 'not-valid-email' } });
+    fireEvent.change(passwordField, { target: { valew: '123456' } });
+    fireEvent.click(buttonElement);
 
     await wait(() => {
-      expect(inputContainer).toHaveStyle(`color: ${colors.primary}`);
+      expect(mockedHistoryPush).not.toHaveBeenCalled();
     });
   });
+
+  it('should display an error if login fails', async () => {
+    mokedSignIn.mockImplementation(() => {
+      throw new Error();
+    });
+
+
+
+    const { getByPlaceholderText, getByText } = render(<SignIn />);
+
+    const emailField = getByPlaceholderText('E-mail');
+    const passwordField = getByPlaceholderText('Senha');
+    const buttonElement = getByText('Entrar');
+
+    fireEvent.change(emailField, { target: { valew: 'joao3klb@htmail.com' } });
+    fireEvent.change(passwordField, { target: { valew: '123456' } });
+    fireEvent.click(buttonElement);
+
+    await wait(() => {
+      expect(mokedaddToast).toHaveBeenCalledWith(expect.objectContaining({
+        type: 'error',
+      }),
+      );
+    });
+  });
+
 });
